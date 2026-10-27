@@ -117,7 +117,7 @@
                             autocomplete="email"
                         />
 
-                        <label for="comentario">Comenta tus experiencias en el fútbol</label>
+                        <label for="comentario">Deja tu comentario</label>
                         <textarea
                             id="comentario"
                             name="comentario"
@@ -126,7 +126,7 @@
                             required
                         ></textarea>
 
-                        <button class="btn" type="submit">
+                        <button class="btnComentas" type="submit">
                             Enviar comentario
                         </button>
                         <p id="form-msg" role="status" aria-live="polite"></p>
@@ -146,52 +146,7 @@
         </main>
 
         <footer class="footer">
-            <p>Hecho con HTML5 y CSS3 · Mi hobby: el fútbol</p>
+            <p>Hecho por Elí Saúl Morales Quesada · Mi hobby: El Fútbol</p>
         </footer>
-
-        <script>
-            const form = document.getElementById("comment-form");
-            const list = document.getElementById("comment-list");
-            const msg = document.getElementById("form-msg");
-
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                const nombre = form.nombre.value.trim();
-                const correo = form.correo.value.trim();
-                const texto = form.comentario.value.trim();
-
-                if (
-                    !nombre ||
-                    !texto ||
-                    !form.correo.checkValidity() ||
-                    !correo
-                ) {
-                    msg.textContent =
-                        "Completa tu nombre, un correo válido y tu comentario.";
-                    msg.className = "error";
-                    return;
-                }
-
-                const empty = list.querySelector(".empty");
-                if (empty) empty.remove();
-
-                const li = document.createElement("li");
-                const strong = document.createElement("strong");
-                strong.textContent = nombre;
-                const p = document.createElement("p");
-                p.textContent = texto;
-                li.append(strong, p);
-                list.prepend(li);
-
-                form.reset();
-                msg.textContent = "Comentario publicado. ¡Gracias!";
-                msg.className = "ok";
-            });
-
-            // Si una foto no existe, se muestra el marcador de posición
-            document.querySelectorAll(".gallery img").forEach((img) => {
-                img.addEventListener("error", () => img.remove());
-            });
-        </script>
     </body>
 </html>

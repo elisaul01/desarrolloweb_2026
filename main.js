@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import session from "express-session";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -20,6 +21,16 @@ app.use(express.json());
 
 //sirve el frontend
 app.use(express.static(path.join(__dirname, "public")));
+
+//configuracion de la sesión
+app.use(
+    session({
+        secret: "poyuistreas1234%",
+        resave: false,
+        saveUninitialized: false,
+        cookie: { maxAge: 1000 * 60 * 60 }, // 1 hora
+    }),
+);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
@@ -48,6 +59,28 @@ app.post("/api/contact", (req, res) => {
     res.json({
         status: "ok",
     });
+});
+
+app.post("/api/comentar", (req, res) => {
+    const { nombre, correo, comentario } = req.body;
+    if (req.body) {
+        if (!req.session.comentarios) {
+            req.session.comentarios = [];
+        }
+        req.session.comentarios.push({
+            nombre,
+            correo,
+            comentario,
+        });
+        console.log("Lista de comentarios", req.session.comentarios);
+    }
+    res.json({
+        status: "ok",
+    });
+});
+
+app.get("/api/comentarios", (req, res) => {
+    res.json(req.session.comentarios || []);
 });
 
 app.listen(port, () => {

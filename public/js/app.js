@@ -1,21 +1,67 @@
-const boton = document.getElementById("btnProbar");
-const resultado = document.getElementById("resultado");
+const boton = document.getElementById("btnComentar");
+const form = document.getElementById("comment-form");
+const list = document.getElementById("comment-list");
+const msg = document.getElementById("form-msg");
 
-boton.addEventListener("click", async (e) => {
-    resultado.textContent = "Consultando servidor...";
-
+form.addEventListener("submit", async (e) => {
     try {
-        const respuesta = await fetch("/api/grettings");
+        e.preventDefault();
 
-        if (!respuesta.ok) {
-            throw new Error(`Error HTTP: ${respuesta.status}`);
+        msg.textContent = "Registrando su comentario...";
+
+        const nombre = form.nombre.value.trim();
+        const correo = form.correo.value.trim();
+        const comentario = form.comentario.value.trim();
+
+        if (!nombre || !comentario || !form.correo.checkValidity() || !correo) {
+            msg.textContent =
+                "Completa tu nombre, un correo válido y tu comentario.";
+            msg.className = "error";
+            return;
         }
 
-        const datos = await respuesta.json();
-        resultado.textContent = datos.message;
+        const data = {
+            nombre: nombre,
+            correo: correo,
+            comentario: document.getElementById("comentario").value,
+        };
+
+        const res = await fetch("/api/comentar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        const dataResponse = await res.json();
+
+        if (!dataResponse.status === "ok") {
+            throw new Error(`Error HTTP: ${res.status}`);
+        }
+
+        const empty = list.querySelector(".empty");
+        if (empty) empty.remove();
+
+        const li = document.createElement("li");
+        const strong = document.createElement("strong");
+        strong.textContent = nombre;
+        const p = document.createElement("p");
+        p.textContent = comentario;
+        li.append(strong, p);
+        list.prepend(li);
+
+        form.reset();
+        msg.textContent = "Comentario publicado. ¡Gracias!";
+        msg.className = "ok";
     } catch (error) {
         console.error(error);
-        resultado.textContent =
-            "No se pudo conectar con el endpoint de prueba.";
+        msg.textContent = "A ocurrido un error al registrar tu comentario";
+        msg.className = "error";
     }
+});
+
+// Si una foto no existe, se muestra el marcador de posición
+document.querySelectorAll(".gallery img").forEach((img) => {
+    img.addEventListener("error", () => img.remove());
 });
