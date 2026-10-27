@@ -3,6 +3,28 @@ const form = document.getElementById("comment-form");
 const list = document.getElementById("comment-list");
 const msg = document.getElementById("form-msg");
 
+async function cargarComentarios() {
+    const res = await fetch("/api/comentarios");
+    renderizarComentarios(await res.json());
+}
+
+function renderizarComentarios(comentarios) {
+    console.log("lista comentarios", comentarios);
+    if (comentarios.length > 0) {
+        list.innerHTML = "";
+        comentarios.forEach((c) => {
+            console.log("comentario", c);
+            const li = document.createElement("li");
+            const strong = document.createElement("strong");
+            strong.textContent = c.nombre;
+            const p = document.createElement("p");
+            p.textContent = c.comentario;
+            li.append(strong, p);
+            list.prepend(li);
+        });
+    }
+}
+
 form.addEventListener("submit", async (e) => {
     try {
         e.preventDefault();
@@ -65,3 +87,5 @@ form.addEventListener("submit", async (e) => {
 document.querySelectorAll(".gallery img").forEach((img) => {
     img.addEventListener("error", () => img.remove());
 });
+
+cargarComentarios();
