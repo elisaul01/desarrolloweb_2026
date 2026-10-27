@@ -2,25 +2,196 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Proyecto universitario</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Mi pasión: jugar fútbol</title>
+        <meta
+            name="description"
+            content="Landing page sobre mi hobby: jugar fútbol."
+        />
         <link rel="stylesheet" href="/css/styles.css" />
     </head>
     <body>
-        <header>
-            <h1>Mi proyecto universitario</h1>
-            <p>Aplicación web con Node.js y Express</p>
+        <header class="nav">
+            <a href="#hobby" class="nav__brand">Fútbol</a>
+            <nav aria-label="Secciones">
+                <a href="#hobby">Mi hobby</a>
+                <a href="#galeria">Galería</a>
+                <a href="#comentarios">Comentarios</a>
+            </nav>
         </header>
 
         <main>
-            <h2>Bienvenido</h2>
-            <p>Este es el frontend de mi aplicación.</p>
+            <!-- SECCIÓN 1: descripción -->
+            <section id="hobby" class="hero">
+                <div class="pitch" aria-hidden="true"></div>
+                <div class="hero__content">
+                    <h1>Jugar fútbol es mi mejor hora de la semana</h1>
+                    <p class="lead">
+                        Desde que pisé una cancha por primera vez, el balón se
+                        volvió mi forma de desconectarme, mover el cuerpo y
+                        compartir con amigos.
+                    </p>
+                    <p>
+                        Me gusta el juego en equipo: cada pase, cada desmarque y
+                        cada gol celebrado entre todos. Juego para divertirme,
+                        mejorar un poco cada partido y conocer gente nueva en
+                        cada cancha.
+                    </p>
+                    <a class="btn" href="#comentarios"
+                        >Cuéntame tu experiencia</a
+                    >
+                </div>
+            </section>
 
-            <button id="btnProbar">Probar conexión con el servidor</button>
+            <!-- SECCIÓN 2: galería -->
+            <section id="galeria" class="section">
+                <h2>Galería</h2>
+                <p class="section__intro">
+                    Momentos en la cancha, con el equipo y entre partidos.
+                </p>
+                <div class="gallery">
+                    <figure class="g1" data-label="Foto 1">
+                        <img
+                            src="img/foto1.jpg"
+                            alt="Partido de fútbol con mi equipo"
+                            loading="lazy"
+                        />
+                    </figure>
+                    <figure class="g2" data-label="Foto 2">
+                        <img
+                            src="img/foto2.jpg"
+                            alt="Jugada durante un partido"
+                            loading="lazy"
+                        />
+                    </figure>
+                    <figure class="g3" data-label="Foto 3">
+                        <img
+                            src="img/foto3.jpg"
+                            alt="Balón sobre la cancha"
+                            loading="lazy"
+                        />
+                    </figure>
+                    <figure class="g4" data-label="Foto 4">
+                        <img
+                            src="img/foto4.jpg"
+                            alt="Celebración de un gol"
+                            loading="lazy"
+                        />
+                    </figure>
+                    <figure class="g5" data-label="Foto 5">
+                        <img
+                            src="img/foto5.jpg"
+                            alt="Entrenamiento con amigos"
+                            loading="lazy"
+                        />
+                    </figure>
+                </div>
+            </section>
 
-            <p id="resultado" aria-live="polite"></p>
+            <!-- SECCIÓN 3: comentarios -->
+            <section id="comentarios" class="section section--form">
+                <div class="form-wrap">
+                    <h2>Deja tu comentario</h2>
+                    <p class="section__intro">
+                        ¿Juegas, ves partidos o quieres unirte a una cancha?
+                        Escríbeme.
+                    </p>
+
+                    <form id="comment-form" novalidate>
+                        <label for="nombre">Nombre</label>
+                        <input
+                            id="nombre"
+                            name="nombre"
+                            type="text"
+                            maxlength="60"
+                            required
+                            autocomplete="name"
+                        />
+
+                        <label for="correo">Correo electrónico</label>
+                        <input
+                            id="correo"
+                            name="correo"
+                            type="email"
+                            required
+                            autocomplete="email"
+                        />
+
+                        <label for="comentario">Comentario</label>
+                        <textarea
+                            id="comentario"
+                            name="comentario"
+                            rows="5"
+                            maxlength="500"
+                            required
+                        ></textarea>
+
+                        <button class="btn" type="submit">
+                            Enviar comentario
+                        </button>
+                        <p id="form-msg" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+
+                <div class="comments">
+                    <h3>Comentarios</h3>
+                    <ul id="comment-list">
+                        <li class="empty">
+                            Aún no hay comentarios. Sé la primera persona en
+                            escribir.
+                        </li>
+                    </ul>
+                </div>
+            </section>
         </main>
 
-        <script src="/js/app.js"></script>
+        <footer class="footer">
+            <p>Hecho con HTML5 y CSS3 · Mi hobby: el fútbol</p>
+        </footer>
+
+        <script>
+            const form = document.getElementById("comment-form");
+            const list = document.getElementById("comment-list");
+            const msg = document.getElementById("form-msg");
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const nombre = form.nombre.value.trim();
+                const correo = form.correo.value.trim();
+                const texto = form.comentario.value.trim();
+
+                if (
+                    !nombre ||
+                    !texto ||
+                    !form.correo.checkValidity() ||
+                    !correo
+                ) {
+                    msg.textContent =
+                        "Completa tu nombre, un correo válido y tu comentario.";
+                    msg.className = "error";
+                    return;
+                }
+
+                const empty = list.querySelector(".empty");
+                if (empty) empty.remove();
+
+                const li = document.createElement("li");
+                const strong = document.createElement("strong");
+                strong.textContent = nombre;
+                const p = document.createElement("p");
+                p.textContent = texto;
+                li.append(strong, p);
+                list.prepend(li);
+
+                form.reset();
+                msg.textContent = "Comentario publicado. ¡Gracias!";
+                msg.className = "ok";
+            });
+
+            // Si una foto no existe, se muestra el marcador de posición
+            document.querySelectorAll(".gallery img").forEach((img) => {
+                img.addEventListener("error", () => img.remove());
+            });
+        </script>
     </body>
 </html>
